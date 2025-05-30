@@ -1,27 +1,26 @@
-import express from 'express';
-import dotenv from 'dotenv';
-import mongoose from 'mongoose';
-import cors from 'cors';
+// server.js
+import express from "express";
+import dotenv from "dotenv";
+import mongoose from "mongoose";
+import cors from "cors";
+
+import authRoutes from "./routes/auth.js";
 
 dotenv.config();
 const app = express();
 
-// Middleware
-app.use(cors());
-app.use(express.json());
+app.use(cors()); // MUST come first
+app.use(express.json()); // Enables JSON body parsing
 
-// Routes
-app.get('/', (req, res) => {
-  res.send('API is running...');
-});
+// ✅ Route Setup
 
-// Connect to MongoDB and start server
-mongoose.connect(process.env.MONGO_URI, {
-  
-})
-.then(() => {
-  app.listen(process.env.PORT, () =>
-    console.log(`Server running on port ${process.env.PORT}`)
-  );
-})
-.catch((error) => console.log(error));
+app.use("/auth", authRoutes);
+
+mongoose
+  .connect(process.env.MONGO_URI, {})
+  .then(() => {
+    app.listen(process.env.PORT, () =>
+      console.log(`Server running on port ${process.env.PORT}`)
+    );
+  })
+  .catch((error) => console.log(error));
